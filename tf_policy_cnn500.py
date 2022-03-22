@@ -14,7 +14,7 @@ TRAIN = True
 PLOT = True
 
 # training environment parameters
-ACTIONS = 500  # number of valid actions
+POSES = 500  # number of valid actions
 GAMMA = 0.99  # decay rate of past observations
 OBSERVE = 1e4  # timesteps to observe before training
 EXPLORE = 1.8e5  # frames over which to anneal epsilon
@@ -24,11 +24,11 @@ FINAL_RATE = 0  # final value of dropout rate
 INITIAL_RATE = 0.9  # initial value of dropout rate
 TARGET_UPDATE = 25000  # update frequency of the target network
 
-network_dir = "../saved_networks/" + "cnn_" + str(ACTIONS)
+network_dir = "../saved_networks/" + "cnn_" + str(POSES)
 if not os.path.exists(network_dir):
     os.makedirs(network_dir)
 if TRAIN:
-    log_dir = "../log/" + "cnn_" + str(ACTIONS)
+    log_dir = "../log/" + "cnn_" + str(POSES)
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
 
@@ -44,15 +44,15 @@ def start():
     config = tf.compat.v1.ConfigProto()
     config.gpu_options.allow_growth = True
     sess = tf.compat.v1.InteractiveSession(config=config)
-    s, readout, keep_rate = create_CNN(ACTIONS)
-    s_target, readout_target, keep_rate_target = create_CNN(ACTIONS)
+    s, readout, keep_rate = create_CNN(POSES)
+    s_target, readout_target, keep_rate_target = create_CNN(POSES)
 
     # define the cost function
-    a = tf.compat.v1.placeholder("float", [None, ACTIONS])
+    a = tf.compat.v1.placeholder("float", [None, POSES])
     y = tf.compat.v1.placeholder("float", [None])
     readout_action = tf.compat.v1.reduce_sum(
         tf.multiply(readout, a), reduction_indices=1)
-    cost = tf.compat.v1.reduce_mean(tf.square(y - readout_action))
+    cost = tf.compat.v1.reduce_mean(tf.square(y - readout_pose))
     train_step = tf.compat.v1.train.AdamOptimizer(1e-5).minimize(cost)
 
     # initialize an training environment
