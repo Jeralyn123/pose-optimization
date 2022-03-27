@@ -19,9 +19,9 @@ class Robot:
         self.mode = train
         self.plot = plot
         if self.mode:
-            self.map_dir = '../DungeonMaps/train'
+            self.map_dir = '../train'
         else:
-            self.map_dir = '../DungeonMaps/test'
+            self.map_dir = '../test'
         self.map_list = os.listdir(self.map_dir)
         self.map_number = np.size(self.map_list)
         if self.mode:
